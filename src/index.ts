@@ -1,9 +1,11 @@
-let developer: string;
+import express from 'express';
+import routes from './routes/index';
 
-developer = "Yassin"
+const app = express();
+const port = 3000;
 
-const GreetDeveloper = (developerName: string): void => {
-  console.log(`Development by ${developerName}`);
-} 
+app.use('/api', routes);
 
-GreetDeveloper(developer);
+app.listen(port, () => {
+  console.log(`Server started on ${port}`);
+});
