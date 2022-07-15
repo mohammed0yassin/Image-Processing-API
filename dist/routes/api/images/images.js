@@ -40,33 +40,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var fs_1 = require("fs");
 var path_1 = __importDefault(require("path"));
-// const sharp = require('sharp');
+var sharp = require('sharp');
 var images = express_1.default.Router();
-var openImage = function (inputImage) { return __awaiter(void 0, void 0, void 0, function () {
-    var myFile;
+var imageExists = function (imageThumbnail, width, height) { return __awaiter(void 0, void 0, void 0, function () {
+    var metadata;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, fs_1.promises.open(inputImage, 'a+')];
+            case 0: return [4 /*yield*/, sharp(imageThumbnail).metadata()];
             case 1:
-                myFile = _a.sent();
-                return [2 /*return*/];
+                metadata = _a.sent();
+                return [2 /*return*/, metadata.width == width && metadata.height == height];
         }
     });
 }); };
 images.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var imagePath, openedImage;
+    var imagePath, width, height, imageThumbnail, imageExist, resizedImage;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 imagePath = path_1.default.join(process.cwd(), '/full/', req.query.filename);
-                console.log(imagePath);
-                return [4 /*yield*/, openImage(imagePath)];
+                width = parseInt(req.query.width);
+                height = parseInt(req.query.height);
+                imageThumbnail = path_1.default.join(process.cwd(), '/thumb/', req.query.filename);
+                return [4 /*yield*/, imageExists(imageThumbnail, width, height)];
             case 1:
-                openedImage = _a.sent();
-                res.sendFile(imagePath);
-                return [2 /*return*/];
+                imageExist = _a.sent();
+                if (!imageExist) return [3 /*break*/, 2];
+                console.log("Image ".concat(req.query.filename, " already exists"));
+                res.sendFile(imageThumbnail);
+                return [3 /*break*/, 4];
+            case 2: return [4 /*yield*/, sharp(imagePath).resize(width, height).toFile(imageThumbnail)];
+            case 3:
+                resizedImage = _a.sent();
+                console.log("Image ".concat(req.query.filename, " resized"));
+                res.sendFile(imageThumbnail);
+                _a.label = 4;
+            case 4: return [2 /*return*/];
         }
     });
 }); });
