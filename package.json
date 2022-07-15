@@ -1,0 +1,40 @@
+{
+  "name": "image-processing-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint **/**/*.ts",
+    "prettier": "prettier --config .prettierrc **/**/*.*s --write",
+    "build": "npx tsc",
+    "jasmine": "jasmine",
+    "test": "npm run build && npm run jasmine",
+    "start": "nodemon src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohammed0yassin/Image-Processing-API.git"
+  },
+  "author": "Mohammed Yassin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohammed0yassin/Image-Processing-API/issues"
+  },
+  "homepage": "https://github.com/mohammed0yassin/Image-Processing-API#readme",
+  "devDependencies": {
+    "@types/jasmine": "^4.0.3",
+    "@types/node": "^18.0.4",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "jasmine": "^4.2.1",
+    "jasmine-spec-reporter": "^7.0.0",
+    "sharp": "^0.30.7"
+  }
+}
