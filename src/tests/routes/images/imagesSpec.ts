@@ -9,7 +9,7 @@ describe('Test Images endpoint responses', () => {
   const testImage = 'test.jpg';
   const resizedImagePath = path.join(process.cwd(), `/full/${testImage}`);
   const testNoImage = 'notafile.jpg';
-  
+
   it('gets and resizes the image', async () => {
     const response = await request.get(
       `/api/images?filename=${testImage}&width=400&height=400`

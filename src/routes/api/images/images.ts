@@ -18,7 +18,7 @@ const imageExists = async (
   }
 };
 
-images.get('/', async (req, res) => {
+images.get('/', async (req: express.Request, res: express.Response): Promise<void> => {
   try {
     // Get image and thumbnail details
     const imagePath = path.join(
@@ -36,19 +36,19 @@ images.get('/', async (req, res) => {
     // Check if imageThumbnail exists
     const imageExist = await imageExists(imageThumbnail, width, height);
     if (imageExist) {
-      console.log(`Image ${req.query.filename} already exists`);
+      console.log(`Image ${(req.query.filename as unknown) as string} already exists`);
       res.sendFile(imageThumbnail);
     }
     // Else create new thumbnail
     else {
       await sharp(imagePath).resize(width, height).toFile(imageThumbnail);
-      console.log(`Image ${req.query.filename} resized`);
+      console.log(`Image ${(req.query.filename as unknown) as string} resized`);
       res.sendFile(imageThumbnail);
     }
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log(err.message);
-      res.send(`Image ${req.query.filename} does not exist`);
+      res.send(`Image ${(req.query.filename as unknown) as string} does not exist`);
     } else {
       console.log('Unexpected error', err);
     }
