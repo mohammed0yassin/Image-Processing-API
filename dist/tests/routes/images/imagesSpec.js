@@ -43,10 +43,12 @@ var supertest_1 = __importDefault(require("supertest"));
 var index_1 = __importDefault(require("../../../index"));
 var fs_1 = require("fs");
 var path_1 = __importDefault(require("path"));
+var sharp = require('sharp');
 var request = (0, supertest_1.default)(index_1.default);
 describe('Test Images endpoint responses', function () {
     var testImage = 'test.jpg';
-    var resizedImagePath = path_1.default.join(process.cwd(), "/full/".concat(testImage));
+    var originalImagePath = path_1.default.join(process.cwd(), "/full/".concat(testImage));
+    var resizedImagePath = path_1.default.join(process.cwd(), "/thumb/".concat(testImage));
     var testNoImage = 'notafile.jpg';
     it('gets and resizes the image', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, resizedImage;
@@ -60,6 +62,26 @@ describe('Test Images endpoint responses', function () {
                     resizedImage = _a.sent();
                     expect(response.status).toBe(200);
                     expect(resizedImage).toBeTruthy();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('processes the image', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var width, height, response, resizedImage;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    width = 400;
+                    height = 400;
+                    return [4 /*yield*/, request.get("/api/images?filename=".concat(testImage, "&width=").concat(width, "&height=").concat(height))];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, sharp(resizedImagePath).metadata()];
+                case 2:
+                    resizedImage = _a.sent();
+                    expect(response.status).toBe(200);
+                    expect(resizedImage.width).toEqual(width);
+                    expect(resizedImage.height).toEqual(height);
                     return [2 /*return*/];
             }
         });
