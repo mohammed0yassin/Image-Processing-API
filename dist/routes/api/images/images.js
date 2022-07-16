@@ -77,9 +77,7 @@ images.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 console.log("Image ".concat(req.query.filename, " already exists"));
                 res.sendFile(imageThumbnail);
                 return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, sharp(imagePath)
-                    .resize(width, height)
-                    .toFile(imageThumbnail)];
+            case 2: return [4 /*yield*/, sharp(imagePath).resize(width, height).toFile(imageThumbnail)];
             case 3:
                 _a.sent();
                 console.log("Image ".concat(req.query.filename, " resized"));

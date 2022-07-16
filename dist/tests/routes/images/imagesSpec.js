@@ -45,14 +45,17 @@ var fs_1 = require("fs");
 var path_1 = __importDefault(require("path"));
 var request = (0, supertest_1.default)(index_1.default);
 describe('Test Images endpoint responses', function () {
+    var testImage = 'test.jpg';
+    var resizedImagePath = path_1.default.join(process.cwd(), "/full/".concat(testImage));
+    var testNoImage = 'notafile.jpg';
     it('gets and resizes the image', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, resizedImage;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get('/api/images?filename=test.jpg&width=400&height=400')];
+                case 0: return [4 /*yield*/, request.get("/api/images?filename=".concat(testImage, "&width=400&height=400"))];
                 case 1:
                     response = _a.sent();
-                    return [4 /*yield*/, fs_1.promises.readFile(path_1.default.join(process.cwd(), '/full/test.jpg'))];
+                    return [4 /*yield*/, fs_1.promises.readFile(resizedImagePath)];
                 case 2:
                     resizedImage = _a.sent();
                     expect(response.status).toBe(200);
@@ -65,15 +68,26 @@ describe('Test Images endpoint responses', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get('/api/images?filename=testa.jpg&width=400&height=400')];
+                case 0: return [4 /*yield*/, request.get("/api/images?filename=".concat(testNoImage, "&width=400&height=400"))];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(200);
-                    expect(response.text).toContain('Image testa.jpg does not exist');
-                    // expect( await fs.readFile(path.join(process.cwd(), '/full/testa.jpg')) ).toThrowError();
-                    return [4 /*yield*/, expectAsync(fs_1.promises.readFile(path_1.default.join(process.cwd(), '/full/testa.jpg'))).not.toBeResolved()];
+                    expect(response.text).toContain("Image ".concat(testNoImage, " does not exist"));
+                    return [4 /*yield*/, expectAsync(fs_1.promises.readFile(path_1.default.join(process.cwd(), "/full/".concat(testNoImage)))).not.toBeResolved()];
                 case 2:
-                    // expect( await fs.readFile(path.join(process.cwd(), '/full/testa.jpg')) ).toThrowError();
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: 
+                // delete the resized test image
+                return [4 /*yield*/, fs_1.promises.unlink(path_1.default.join(process.cwd(), "/thumb/".concat(testImage)))];
+                case 1:
+                    // delete the resized test image
                     _a.sent();
                     return [2 /*return*/];
             }
