@@ -40,17 +40,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var supertest_1 = __importDefault(require("supertest"));
-var index_1 = __importDefault(require("../index"));
+var index_1 = __importDefault(require("../../../index"));
+var fs_1 = require("fs");
+var path_1 = __importDefault(require("path"));
 var request = (0, supertest_1.default)(index_1.default);
-describe('Test endpoint responses', function () {
-    it('gets the main endpoint', function () { return __awaiter(void 0, void 0, void 0, function () {
+describe('Test Images endpoint responses', function () {
+    it('gets and resizes the image', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, resizedImage;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request.get('/api/images?filename=test.jpg&width=400&height=400')];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, fs_1.promises.readFile(path_1.default.join(process.cwd(), '/full/test.jpg'))];
+                case 2:
+                    resizedImage = _a.sent();
+                    expect(response.status).toBe(200);
+                    expect(resizedImage).toBeTruthy();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('throws an error if image is not found', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get('/api')];
+                case 0: return [4 /*yield*/, request.get('/api/images?filename=testa.jpg&width=400&height=400')];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(200);
+                    expect(response.text).toContain('Image testa.jpg does not exist');
+                    // expect( await fs.readFile(path.join(process.cwd(), '/full/testa.jpg')) ).toThrowError();
+                    return [4 /*yield*/, expectAsync(fs_1.promises.readFile(path_1.default.join(process.cwd(), '/full/testa.jpg'))).not.toBeResolved()];
+                case 2:
+                    // expect( await fs.readFile(path.join(process.cwd(), '/full/testa.jpg')) ).toThrowError();
+                    _a.sent();
                     return [2 /*return*/];
             }
         });
