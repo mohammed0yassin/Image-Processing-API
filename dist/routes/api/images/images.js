@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var path_1 = __importDefault(require("path"));
-var sharp = require('sharp');
+var sharp_1 = __importDefault(require("sharp"));
 var images = express_1.default.Router();
 var imageExists = function (imageThumbnail, width, height) { return __awaiter(void 0, void 0, void 0, function () {
     var metadata, err_1;
@@ -49,7 +49,7 @@ var imageExists = function (imageThumbnail, width, height) { return __awaiter(vo
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, sharp(imageThumbnail).metadata()];
+                return [4 /*yield*/, (0, sharp_1.default)(imageThumbnail).metadata()];
             case 1:
                 metadata = _a.sent();
                 return [2 /*return*/, metadata.width == width && metadata.height == height];
@@ -77,7 +77,7 @@ images.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 console.log("Image ".concat(req.query.filename, " already exists"));
                 res.sendFile(imageThumbnail);
                 return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, sharp(imagePath).resize(width, height).toFile(imageThumbnail)];
+            case 2: return [4 /*yield*/, (0, sharp_1.default)(imagePath).resize(width, height).toFile(imageThumbnail)];
             case 3:
                 _a.sent();
                 console.log("Image ".concat(req.query.filename, " resized"));

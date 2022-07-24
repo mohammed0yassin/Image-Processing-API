@@ -43,13 +43,32 @@ var supertest_1 = __importDefault(require("supertest"));
 var index_1 = __importDefault(require("../../../index"));
 var fs_1 = require("fs");
 var path_1 = __importDefault(require("path"));
-var sharp = require('sharp');
+var sharp_1 = __importDefault(require("sharp"));
 var request = (0, supertest_1.default)(index_1.default);
 describe('Test Images endpoint responses', function () {
     var testImage = 'test.jpg';
-    var originalImagePath = path_1.default.join(process.cwd(), "/full/".concat(testImage));
     var resizedImagePath = path_1.default.join(process.cwd(), "/thumb/".concat(testImage));
     var testNoImage = 'notafile.jpg';
+    beforeEach(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fs_1.promises.readFile(resizedImagePath)];
+                case 1:
+                    _b.sent();
+                    return [4 /*yield*/, fs_1.promises.unlink(path_1.default.join(process.cwd(), "/thumb/".concat(testImage)))];
+                case 2:
+                    _b.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    _a = _b.sent();
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); });
     it('gets and resizes the image', function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, resizedImage;
         return __generator(this, function (_a) {
@@ -66,7 +85,7 @@ describe('Test Images endpoint responses', function () {
             }
         });
     }); });
-    it('processes the image', function () { return __awaiter(void 0, void 0, void 0, function () {
+    it('makes sure a new image is created and processed', function () { return __awaiter(void 0, void 0, void 0, function () {
         var width, height, response, resizedImage;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -76,10 +95,11 @@ describe('Test Images endpoint responses', function () {
                     return [4 /*yield*/, request.get("/api/images?filename=".concat(testImage, "&width=").concat(width, "&height=").concat(height))];
                 case 1:
                     response = _a.sent();
-                    return [4 /*yield*/, sharp(resizedImagePath).metadata()];
+                    return [4 /*yield*/, (0, sharp_1.default)(resizedImagePath).metadata()];
                 case 2:
                     resizedImage = _a.sent();
                     expect(response.status).toBe(200);
+                    expect(resizedImage).toBeTruthy();
                     expect(resizedImage.width).toEqual(width);
                     expect(resizedImage.height).toEqual(height);
                     return [2 /*return*/];
@@ -95,7 +115,7 @@ describe('Test Images endpoint responses', function () {
                     response = _a.sent();
                     expect(response.status).toBe(200);
                     expect(response.text).toContain("Image ".concat(testNoImage, " does not exist"));
-                    return [4 /*yield*/, expectAsync(fs_1.promises.readFile(path_1.default.join(process.cwd(), "/full/".concat(testNoImage)))).not.toBeResolved()];
+                    return [4 /*yield*/, expectAsync(fs_1.promises.readFile(resizedImagePath)).not.toBeResolved()];
                 case 2:
                     _a.sent();
                     return [2 /*return*/];
@@ -103,15 +123,19 @@ describe('Test Images endpoint responses', function () {
         });
     }); });
     afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: 
-                // delete the resized test image
-                return [4 /*yield*/, fs_1.promises.unlink(path_1.default.join(process.cwd(), "/thumb/".concat(testImage)))];
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, fs_1.promises.unlink(path_1.default.join(process.cwd(), "/thumb/".concat(testImage)))];
                 case 1:
-                    // delete the resized test image
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     }); });

@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
-
-const sharp = require('sharp');
+import sharp from 'sharp';
 
 const images = express.Router();
 
